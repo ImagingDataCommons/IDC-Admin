@@ -40,7 +40,6 @@ Function core. Log messages
 def function_core():
     bq_project = os.environ["BQ_PROJECT"]
     bq_dataset = os.environ["BQ_DATASET"]
-    bq_table = os.environ["BQ_TABLE"]
 
     Repo.clone_from("https://github.com/ImagingDataCommons/IDC-Admin.git", "/tmp/sqltests")
 
@@ -55,7 +54,7 @@ def function_core():
         column_id = item['columnID']
         expected = item['expected']
         expected_count = item['count']
-        use_sql = _test_sql(sql_format, bq_project, bq_dataset, bq_table)
+        use_sql = _test_sql(sql_format, bq_project, bq_dataset)
         try:
             results = _bq_harness_with_result(use_sql, True)
             count = 0
@@ -81,8 +80,8 @@ def function_core():
 Test SQL
 '''
 
-def _test_sql(sql_format, project_id, dataset_id, table_name):
-    sql = sql_format.format(project=project_id, dataset=dataset_id, table=table_name)
+def _test_sql(sql_format, project_id, dataset_id):
+    sql = sql_format.format(project=project_id, dataset=dataset_id)
     return sql
 
 '''

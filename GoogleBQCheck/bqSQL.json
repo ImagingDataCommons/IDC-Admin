@@ -2,13 +2,13 @@
   "tests":
     [
       {
-        "sql": "SELECT PatientID FROM `{project}.{dataset}.{table}` ORDER BY PatientID LIMIT 1",
+        "sql": "SELECT PatientID FROM `{project}.{dataset}.dicom_all` ORDER BY PatientID LIMIT 1",
         "columnID": "PatientID",
         "expected": "01BR001",
         "count": 1
       },
       {
-        "sql": "SELECT collection_name FROM `{project}.{dataset}.{table}` ORDER BY collection_name LIMIT 1",
+        "sql": "SELECT collection_name FROM `{project}.{dataset}.dicom_all` ORDER BY collection_name LIMIT 1",
         "columnID": "collection_name",
         "expected": "4D-Lung",
         "count": 1

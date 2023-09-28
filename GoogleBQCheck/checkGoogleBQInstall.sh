@@ -21,7 +21,6 @@ ADMIN_PROJECT=project_where_function_is_installed
 
 BQ_PROJECT=project_of_bq_table_to_check
 BQ_DATASET=dataset_of_bq_table_to_check
-BQ_TABLE=table_name_to_check
 REGION=region_to_use
 SA_NAME=service_account_name
 FUNCTION_NAME=function_nam
@@ -179,7 +178,7 @@ if [ "${DO_FUNCTION_DEPLOY}" == "TRUE" ]; then
       --runtime python39 \
       --service-account ${SA_NAME}@${ADMIN_PROJECT}.iam.gserviceaccount.com \
       --no-allow-unauthenticated \
-      --set-env-vars="BQ_PROJECT=${BQ_PROJECT},BQ_DATASET=${BQ_DATASET},BQ_TABLE=${BQ_TABLE}" \
+      --set-env-vars="BQ_PROJECT=${BQ_PROJECT},BQ_DATASET=${BQ_DATASET}" \
       --project ${ADMIN_PROJECT} \
       --verbosity=info
 
