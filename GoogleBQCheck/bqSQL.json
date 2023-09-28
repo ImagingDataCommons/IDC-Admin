@@ -1,0 +1,6 @@
+[
+    {
+      "sql": "SELECT PatientID FROM `{project}.{dataset}.{table}` ORDER BY PatientID LIMIT 1",
+      "expected": "TBD"
+    }
+]
