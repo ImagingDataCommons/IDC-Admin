@@ -15,11 +15,12 @@
 
 import os
 import time
+import json
 
 from google.cloud import bigquery
+from git import Repo
 
 import functions_framework
-
 
 '''
 ----------------------------------------------------------------------------------------------
@@ -41,26 +42,47 @@ def function_core():
     bq_dataset = os.environ["BQ_DATASET"]
     bq_table = os.environ["BQ_TABLE"]
 
-    use_sql = _test_sql(bq_project, bq_dataset, bq_table)
-    try:
-        results = _bq_harness_with_result(use_sql, True)
-        for row in results:
-            print("BQ status check: Have result: {}".format(row))
-        return "Success"
-    except Exception as ex:
-        print("BQ status check: FAILURE ALERT: {}".format(str(ex)))
-        return "Failure"
+    Repo.clone_from("https://github.com/ImagingDataCommons/IDC-Admin.git", "/tmp/sqltests")
+
+    # Opening JSON file
+    f = open('/tmp/sqltests/GoogleBQCheck/bqSQL.json')
+    data = json.load(f)
+    tests = data["tests"]
+
+    test_num = 0
+    for item in tests:
+        sql_format = item['sql']
+        column_id = item['columnID']
+        expected = item['expected']
+        expected_count = item['count']
+        use_sql = _test_sql(sql_format, bq_project, bq_dataset, bq_table)
+        try:
+            results = _bq_harness_with_result(use_sql, True)
+            count = 0
+            for row in results:
+                result = row[column_id]
+                success = (result == expected)
+                if not success:
+                    print("BQ status check test {}: FAILURE ALERT: expected {} != {}".format(test_num, result, expected))
+                    return "Failure"
+                count += 1
+            if count != expected_count:
+                print("BQ status check test {}: FAILURE ALERT: count {} != {}".format(test_num, count, expected_count))
+                return "Failure"
+        except Exception as ex:
+            print("BQ status check test {}: FAILURE ALERT: exception {}".format(test_num, str(ex)))
+            return "Failure"
+        test_num += 1
+
+    return "Success"
 
 '''
 ----------------------------------------------------------------------------------------------
 Test SQL
 '''
 
-def _test_sql(project_id, dataset_id, table_name):
-
-    sql = '''
-        SELECT PatientID FROM `{}.{}.{}` LIMIT 1
-        '''.format(project_id, dataset_id, table_name)
+def _test_sql(sql_format, project_id, dataset_id, table_name):
+    sql = sql_format.format(project=project_id, dataset=dataset_id, table=table_name)
     return sql
 
 '''
