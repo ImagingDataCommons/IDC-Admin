@@ -4,7 +4,7 @@
       {
         "sql": "SELECT PatientID FROM `{project}.{dataset}.dicom_all` ORDER BY PatientID LIMIT 1",
         "columnID": "PatientID",
-        "expected": "01BR001",
+        "expected": "002BD524C907A2A5121D3ADAED05D442",
         "count": 1
       },
       {
